@@ -17,8 +17,49 @@ const Task = db.define('Task', {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
   },
-  due: Sequelize.DATE,
+  due: {
+    type: Sequelize.DATE,
+    defaultValue: null,
+  },
+
+  /* -------- *Not Needy?------ */
+
+  timeRemaining: {
+    type: Sequelize.NUMERIC,
+    get() {
+      if (!this.getDataValue('due')) return Infinity;
+      return this.getDataValue('due') - new Date();
+    },
+  },
+
+  overdue: {
+    type: Sequelize.BOOLEAN,
+    get() {
+      if (this.getDataValue('complete')) return false;
+      if (this.timeRemaining < 0) return true;
+      return false;
+    },
+  },
 });
+
+Task.clearCompleted = function () {
+  return Task.destroy({ where: { complete: true } });
+};
+
+Task.completeAll = function () {
+  return Task.update({ complete: true }, { where: { complete: false } });
+};
+
+Task.prototype.getTimeRemaining = function () {
+  if (!this.getDataValue('due')) return Infinity;
+  return this.getDataValue('due') - new Date();
+};
+
+Task.prototype.isOverdue = function () {
+  if (this.getDataValue('complete')) return false;
+  if (this.timeRemaining < 0) return true;
+  return false;
+};
 
 const Owner = db.define('Owner', {
   name: {
@@ -30,9 +71,8 @@ const Owner = db.define('Owner', {
   },
 });
 
-Task.belongsTo(Owner);
+Task.belongsTo(Owner, { as: 'Ow' });
 Owner.hasMany(Task);
-
 
 //---------^^^---------  your code above  ---------^^^----------
 
