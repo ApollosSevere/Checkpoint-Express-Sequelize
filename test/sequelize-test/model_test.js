@@ -124,7 +124,7 @@ describe('Task and Owner', function () {
         https://medium.com/@jasmine.esplago.munoz/feeling-the-magic-with-sequelize-magic-methods-e9cc89ecdcc5
       */
 
-      it('should associate a task to an owner and return a promise', async function () {
+      xit('should associate a task to an owner and return a promise', async function () {
         const task = await Task.create({ name: 'make pizza' });
         const owner = await Owner.create({ name: 'Priti' });
 

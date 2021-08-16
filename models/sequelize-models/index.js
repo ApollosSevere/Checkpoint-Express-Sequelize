@@ -22,8 +22,6 @@ const Task = db.define('Task', {
     defaultValue: null,
   },
 
-  /* -------- *Not Needy?------ */
-
   timeRemaining: {
     type: Sequelize.NUMERIC,
     get() {
@@ -71,7 +69,7 @@ const Owner = db.define('Owner', {
   },
 });
 
-Task.belongsTo(Owner, { as: 'Ow' });
+Task.belongsTo(Owner);
 Owner.hasMany(Task);
 
 //---------^^^---------  your code above  ---------^^^----------
